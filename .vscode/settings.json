@@ -1,0 +1,8 @@
+{
+  "[php]": {
+    "files.encoding": "iso88591"
+  },
+  "[html]": {
+    "files.encoding": "iso88591"
+  },
+}
