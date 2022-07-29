@@ -1,220 +1,89 @@
-<!-- <?php include('curl.php');?> -->
+<?php
+include('app/defines.php');
 
+$facebook_id = FACEBOOK_APP_ID2;
 
+// echo $facebook_id;
+// die();
+?>
 
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html>
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <title>Inicial</title>
-
+<title>Facebook Login JavaScript Example</title>
+<meta charset="UTF-8">
 </head>
-
 <body>
 
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v14.0&appId=<?php echo $facebook_id ?>&autoLogAppEvents=1" nonce="7Wt7DRcm"></script>
 <script>
 
-  window.fbAsyncInit = function() {
+  function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+    console.log('statusChangeCallback');
+    console.log(response);                   // The current login status of the person.
+    if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+      console.log('Esse e o Token quando checa se está conectado: ',response.authResponse.accessToken);
+      testAPI();  
 
-    FB.init({
+    } else {                                 // Not logged into your webpage or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this webpage.';
+    }
+  }
 
-      appId            : '742408203636033',
 
-      autoLogAppEvents : true,
-
-      xfbml            : true,
-
-      version          : 'v14.0'
-
+  function checkLoginState() {               // Called when a person is finished with the Login Button.
+    FB.getLoginStatus(function(response) {   // See the onlogin handler
+      statusChangeCallback(response);
     });
+  }
 
 
+  // window.fbAsyncInit = function() {
+  //   FB.init({
+  //     appId      : 'FACEBOOK_APP_ID2',
+  //     cookie     : true,                     // Enable cookies to allow the server to access the session.
+  //     xfbml      : true,                     // Parse social plugins on this webpage.
+  //     version    : 'v14.0'           // Use this Graph API version for this call.
+  //   });
 
-    FB.login(function(response) {
+   
 
-      if (response.authResponse) {
 
-      console.log('Welcome!  Fetching your information.... ');
+  //   FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
+  //     statusChangeCallback(response);        // Returns the login status.
+  //   });
+  // };
+ 
+  function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Fez o login com sucesso: ' + response.name);
+      
+      document.getElementById('status').innerHTML =
+        'Agradeço por ter logado, ' + response.name + '!';
 
-      FB.api('/me', function(response) {
-
-        console.log('Good to see you, ' + response.name + '.');
-
-      });
-
-      } else {
-
-      console.log('User cancelled  login or did not fully authorize.');
-
-      }
-
+      document.getElementById('status').innerHTML =
+        // 'Agradeço por ter logado, ' + response.name + '!<br /><br />Seu Acess Token é:<br /><input value="' + response + '" />';
+        'Agradeço por ter logado, ' + response.name + '!<br /><br />';
     });
-
-  };
+  }
 
 </script>
 
+
+<!-- The JS SDK Login Button -->
+<!-- 
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button> -->
+
+<div class="fb-login-button" scope="public_profile,pages_read_engagement,email,instagram_basic,pages_show_list,ads_management,business_management,instagram_content_publish" onlogin="checkLoginState();" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
+
+<div id="status">
+</div>
+
+<!-- Load the JS SDK asynchronously -->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-
-  
-
-  <div class="layout">
-
-    <img style="width: 150px;" src="https://logodownload.org/wp-content/uploads/2021/10/meta-logo.png" alt="meta" srcset="">
-
-    <div class="conectarml">
-
-        <?php if(isset($_SESSION['integracao']) == 'ativa'): ?>
-
-          <div style="text-align: center;" class="integracao-realizada">
-
-            <h3>Integra??o ativa</h3>
-
-            <h4>Gostaria de realizar outra integração</h4>
-
-            <button type="submit" class="btn btn-success"><a href="https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=4228219194997851&redirect_uri=https://teste2.pesquisaadv.com.br/__projetos/MARLON/marlon-development/CURL-PHP/redirecionador.php&state=123">Sim</a></button>
-
-            <button type="submit" class="btn btn-danger"><a href="https://teste2.pesquisaadv.com.br/__projetos/MARLON/marlon-development/CURL-PHP/">N?o</a></button>
-
-
-
-          </div>
-
-          
-
-          <script>
-
-            // window.onload = function () {
-
-            //   setTimeout(function() {
-
-            //     window.location.href = "http://localhost/CURL-PHP/cadastrocomsucesso.php";
-
-            //   }, 5000);
-
-            // }
-
-          </script>
-
-          <?php unset($_SESSION['integracao']); ?>
-
-        <?php else: ?>
-
-        <legend>Quero Integrar com o Facebook/Instagram ou Meta Verso mais</legend>
-
-        <form>
-
-                    
-
-          <!-- <button type="submit" class="btn btn-primary"><a href="https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=4228219194997851&redirect_uri=https://teste2.pesquisaadv.com.br/__projetos/MARLON/marlon-development/CURL-PHP/redirecionador.php&state=123">Integrar</a></button> -->
-
-          
-
-        </form>
-
-      </div>
-
-      <?php unset($_SESSION['integracao']); ?>
-
-    <?php endif; ?>
-
-
-
-    
-
-  
-
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-  
-
-
-
 </body>
-
 </html>
-
-
-
-<style>
-
-  * {
-
-    padding:0;
-
-    margin:0;
-
-    vertical-align:baseline;
-
-    list-style:none;
-
-    text-decoration: none;
-
-    color: inherit;
-
-    border:0
-
-    }
-
-    a {
-
-      text-decoration: none;
-
-    color: inherit;
-
-    }
-
-  .layout{
-
-  width: 100%;
-
-  height: 100vh;
-
-  left: 0;
-
-  right: 0;
-
-  display: grid;
-
-  place-items: center;
-
-  }
-
-  .conectarml{
-
-    background: #fff;
-
-    width: 500px;
-
-    height: 200px;
-
-    margin-top: -250px;
-
-    padding: 15px;
-
-    border-radius: 5px;
-
-    box-shadow: 0 0 10px 0 #00000070;
-
-    text-align: center;
-
-  }
-
-</style>
-
-
-
